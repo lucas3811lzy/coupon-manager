@@ -1,0 +1,7 @@
+Remember each time a new feature is pushed.
+Run npx wrangler preview --name <preview-branch-name> 
+
+Usally this branch is called qa.
+
+
+If happy, you can deploy production
