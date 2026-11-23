@@ -6,18 +6,30 @@
         <svg width="32" height="32" viewBox="0 0 64 64" aria-hidden="true"><rect x="6" y="14" width="52" height="36" rx="10" fill="#0E7C66"/><rect x="30" y="14" width="4" height="36" fill="#F6E7C8"/><circle cx="20" cy="32" r="4" fill="#F6E7C8"/><circle cx="44" cy="32" r="4" fill="#F6E7C8"/></svg>
         <h1>消費券管家</h1>
       </div>
-      <button class="ghost" type="button" @click="app.showHelp = true">幫助</button>
+      <div class="top-actions">
+        <a class="github-link" href="https://github.com/lucas3811lzy/coupon-manager" target="_blank" rel="noopener noreferrer" aria-label="Welcome to collaborate or contribute for learning purpose" title="Welcome to collaborate or contribute for learning purpose"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.55.1.76-.24.76-.53v-2.07c-3.1.67-3.76-1.32-3.76-1.32-.5-1.28-1.23-1.62-1.23-1.62-1.01-.69.08-.68.08-.68 1.12.08 1.71 1.15 1.71 1.15 1 .1.76 1.97 3.66 1.39.1-.72.39-1.21.7-1.49-2.48-.28-5.08-1.24-5.08-5.52 0-1.22.44-2.21 1.15-2.99-.12-.28-.5-1.42.11-2.95 0 0 .94-.3 3.05 1.14a10.6 10.6 0 0 1 5.55 0c2.12-1.44 3.05-1.14 3.05-1.14.61 1.53.23 2.67.11 2.95.72.78 1.15 1.77 1.15 2.99 0 4.3-2.6 5.23-5.09 5.51.4.35.75 1.02.75 2.06V22c0 .29.2.64.77.53A11.1 11.1 0 0 0 12 .9Z"/></svg><span>GitHub</span><span class="github-tooltip">Welcome to collaborate or contribute for learning purpose</span></a>
+        <button class="ghost" type="button" @click="app.showHelp = true">幫助</button>
+      </div>
     </header>
 
     <ClockBar />
     <ActivityBanner />
     <BankBar />
+    <button class="planner-entry" type="button" @click="app.view = 'planner'">
+      <span class="planner-icon" aria-hidden="true">✦</span>
+      <span class="planner-copy">
+        <b>消費組合建議</b>
+        <small>輸入金額，查看各銀行可用優惠及預計付款金額</small>
+      </span>
+      <span class="planner-arrow" aria-hidden="true">›</span>
+    </button>
     <TotalCard />
     <FaceList />
   </div>
 
   <!-- ===== 统计视图 ===== -->
-  <StatsView v-else />
+  <StatsView v-else-if="app.view === 'stats'" />
+  <SpendPlanner v-else />
 
   <SheetModal />
   <Toast />
@@ -29,17 +41,18 @@
 <script setup>
 import { onMounted, onUnmounted } from 'vue'
 import { app, TUT_KEY } from './store'
-import ClockBar from './components/ClockBar.vue'
-import ActivityBanner from './components/ActivityBanner.vue'
-import BankBar from './components/BankBar.vue'
-import TotalCard from './components/TotalCard.vue'
-import FaceList from './components/FaceList.vue'
-import StatsView from './components/StatsView.vue'
-import SheetModal from './components/SheetModal.vue'
-import Toast from './components/Toast.vue'
-import ActModal from './components/ActModal.vue'
-import HelpModal from './components/HelpModal.vue'
-import Tutorial from './components/Tutorial.vue'
+import ClockBar from './components/common/ClockBar.vue'
+import ActivityBanner from './components/activity/ActivityBanner.vue'
+import BankBar from './components/coupons/BankBar.vue'
+import TotalCard from './components/coupons/TotalCard.vue'
+import FaceList from './components/coupons/FaceList.vue'
+import StatsView from './components/views/StatsView.vue'
+import SpendPlanner from './components/views/SpendPlanner.vue'
+import SheetModal from './components/dialogs/SheetModal.vue'
+import Toast from './components/common/Toast.vue'
+import ActModal from './components/activity/ActModal.vue'
+import HelpModal from './components/dialogs/HelpModal.vue'
+import Tutorial from './components/dialogs/Tutorial.vue'
 
 let cycleTimer = null
 
@@ -75,8 +88,32 @@ a{color:inherit}
 
 .top{display:flex;align-items:center;justify-content:space-between;padding:4px 2px 10px}
 .brand{display:flex;align-items:center;gap:9px}
+.top-actions{display:flex;align-items:center;gap:7px}
+.github-link{position:relative}
+.github-tooltip{position:absolute;top:calc(100% + 7px);right:0;width:220px;padding:8px 10px;border-radius:10px;background:#1F2A26;color:#fff;font-size:11px;font-weight:500;line-height:1.4;opacity:0;pointer-events:none;transform:translateY(-3px);transition:opacity .15s,transform .15s;z-index:5}
+.github-link:hover .github-tooltip,.github-link:focus-visible .github-tooltip{opacity:1;transform:translateY(0)}
+.github-link svg{width:16px;height:16px}
+.planner-entry{display:flex;align-items:center;gap:11px;width:100%;margin:0 0 14px;padding:12px;border:1px solid #cfe4da;border-radius:15px;background:linear-gradient(100deg,#eff8f3,#fff);text-align:left;box-shadow:var(--shadow)}
+.planner-icon{display:grid;place-items:center;width:36px;height:36px;border-radius:12px;background:var(--brand);color:#fff;font-size:19px}
+.planner-copy{display:flex;flex:1;flex-direction:column;gap:2px}.planner-copy b{font-size:13px;color:var(--brand)}.planner-copy small{font-size:11px;color:var(--muted)}.planner-arrow{font-size:23px;color:var(--brand)}
 .brand h1{font-size:21px;margin:0;font-weight:700;letter-spacing:.5px}
 .ghost{height:42px;padding:0 16px;border-radius:999px;background:var(--card);color:var(--brand);font-size:15px;font-weight:600;box-shadow:var(--shadow);border:1px solid var(--line)}
+.github-link{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:42px;padding:0 10px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--muted);font-size:12px;font-weight:600;text-decoration:none;box-shadow:var(--shadow)}
+.github-link svg{width:16px;height:16px;flex:none}
+.github-link:focus-visible,.planner-entry:focus-visible{outline:2px solid var(--brand);outline-offset:3px}
+.planner-entry:hover{border-color:var(--brand)}
+
+@media(max-width:390px){
+  .page{padding-right:12px;padding-left:12px}
+  .top{gap:6px}
+  .brand{gap:6px;min-width:0}
+  .brand svg{width:27px;height:27px;flex:none}
+  .brand h1{font-size:17px;white-space:nowrap}
+  .top-actions{gap:5px;flex:none}
+  .github-link{width:38px;padding:0}
+  .github-link span:first-of-type{display:none}
+  .ghost{height:40px;padding:0 11px;font-size:14px}
+}
 
 /* 飞行券片（注入 body，须全局） */
 .fly{position:fixed;z-index:130;width:66px;height:38px;border-radius:9px;background:var(--gold);color:#fff;font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,.28);transform-origin:center;transition:transform .6s cubic-bezier(.25,.6,.25,1),opacity .6s}

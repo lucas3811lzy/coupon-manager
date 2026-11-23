@@ -4,5 +4,12 @@
   "assets": {
     "directory": "./dist"
   },
-  "previews": {}
+  "previews": {},
+  "observability": {
+    "logs": {
+      "enabled": true,
+      "invocation_logs": true,
+      "persist": true
+    }
+  }
 }

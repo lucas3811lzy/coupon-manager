@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import { app, FACES, TIMES, NAMES } from '../store'
+import { app, FACES, TIMES, NAMES } from '../../store'
 </script>
 
 <style scoped>

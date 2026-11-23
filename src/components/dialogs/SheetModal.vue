@@ -30,7 +30,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { app, NAMES, TIMES } from '../store'
+import { app, NAMES, TIMES } from '../../store'
 
 const qnum = ref(null)
 function bump () {

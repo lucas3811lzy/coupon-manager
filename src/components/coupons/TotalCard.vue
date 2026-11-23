@@ -18,8 +18,8 @@
 </template>
 
 <script setup>
-import { app, BANKS, NAMES, fmt, amountFont } from '../store'
-import { curTotal, curNeed, allTotal } from '../store'
+import { app, BANKS, NAMES, fmt, amountFont } from '../../store'
+import { curTotal, curNeed, allTotal } from '../../store'
 </script>
 
 <style scoped>

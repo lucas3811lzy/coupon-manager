@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { app, TUT } from '../store'
+import { app, TUT } from '../../store'
 </script>
 
 <style scoped>

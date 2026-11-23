@@ -13,5 +13,5 @@
 </template>
 
 <script setup>
-import { app, isLucky, isWarn, actTag, actDesc } from '../store'
+import { app, isLucky, isWarn, actTag, actDesc } from '../../store'
 </script>

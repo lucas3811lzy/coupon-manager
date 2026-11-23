@@ -17,5 +17,5 @@
 </template>
 
 <script setup>
-import { app, isLucky, isWarn, helpTag } from '../store'
+import { app, isLucky, isWarn, helpTag } from '../../store'
 </script>

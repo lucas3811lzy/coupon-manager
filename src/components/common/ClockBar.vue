@@ -11,7 +11,7 @@
 <script setup>
 // NTP 校時組件：聯網取網絡時間，與裝置時間比對，偏差明顯時以網絡時間為準
 import { ref, onMounted, onUnmounted } from 'vue'
-import { app, WEEK } from '../store'
+import { app, WEEK } from '../../store'
 
 const dateText = ref('—')
 const timeText = ref('--:--:--')

@@ -63,9 +63,12 @@ export function amountFont (n, base, min) {
 }
 
 // ================= 全局响应式 Store =================
-import { reactive, computed } from 'vue'
+import { computed } from 'vue'
+import { defineStore } from 'pinia'
+import { pinia } from './pinia.js'
 
-export const app = reactive({
+export const useCouponStore = defineStore('coupon-manager', {
+  state: () => ({
   state: load() || blank(),
   bank: 'boc',
   curFace: 50,
@@ -84,6 +87,8 @@ export const app = reactive({
   ntpState: 'off',         // off | ok | fail
   _tt: null,
 
+  }),
+  actions: {
   save () {
     localStorage.setItem(KEY, JSON.stringify(this.state))
   },
@@ -241,7 +246,9 @@ export const app = reactive({
     this.showTut = false
     localStorage.setItem(TUT_KEY, '1')
   }
+  }
 })
+export const app = useCouponStore(pinia)
 
 // ---------- 计算属性 ----------
 export const curTotal = computed(() => app.bankTotal(app.bank))

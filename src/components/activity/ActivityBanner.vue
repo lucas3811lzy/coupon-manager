@@ -10,7 +10,7 @@
 </template>
 
 <script setup>
-import { app, isLucky, isWarn, actEmoji, actTitle, actSub } from '../store'
+import { app, isLucky, isWarn, actEmoji, actTitle, actSub } from '../../store'
 </script>
 
 <style scoped>

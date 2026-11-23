@@ -29,8 +29,8 @@
 </template>
 
 <script setup>
-import { app, FACES, TIMES, fmt, amountFont } from '../store'
-import { allTotal, allNeed, allGotAmt, allUsedAmt, allLeftCnt, faceStats } from '../store'
+import { app, FACES, TIMES, fmt, amountFont } from '../../store'
+import { allTotal, allNeed, allGotAmt, allUsedAmt, allLeftCnt, faceStats } from '../../store'
 </script>
 
 <style scoped>

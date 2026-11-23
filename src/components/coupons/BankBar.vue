@@ -32,7 +32,7 @@
 </template>
 
 <script setup>
-import { app, BANKS, NAMES } from '../store'
+import { app, BANKS, NAMES } from '../../store'
 </script>
 
 <style scoped>
@@ -85,11 +85,11 @@ import { app, BANKS, NAMES } from '../store'
   font-weight: 600;
 }
 
-.bank .logo.bg-boc { background-image: url('../assets/boc.png'); }
-.bank .logo.bg-icbc { background-image: url('../assets/icbc.png'); }
-.bank .logo.bg-macaupass { background-image: url('../assets/macaupass.png'); }
-.bank .logo.bg-luso { background-image: url('../assets/luso.png'); }
-.bank .logo.bg-taifung { background-image: url('../assets/taifung.png'); }
-.bank .logo.bg-cgb { background-image: url('../assets/cgb.png'); }
-.bank .logo.bg-alipay { background-image: url('../assets/alipay.png'); }
+.bank .logo.bg-boc { background-image: url('../../assets/boc.png'); }
+.bank .logo.bg-icbc { background-image: url('../../assets/icbc.png'); }
+.bank .logo.bg-macaupass { background-image: url('../../assets/macaupass.png'); }
+.bank .logo.bg-luso { background-image: url('../../assets/luso.png'); }
+.bank .logo.bg-taifung { background-image: url('../../assets/taifung.png'); }
+.bank .logo.bg-cgb { background-image: url('../../assets/cgb.png'); }
+.bank .logo.bg-alipay { background-image: url('../../assets/alipay.png'); }
 </style>

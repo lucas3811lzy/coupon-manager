@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import { app } from '../store'
+import { app } from '../../store'
 </script>
 
 <style scoped>
