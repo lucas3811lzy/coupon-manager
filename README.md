@@ -40,11 +40,6 @@ npm run dev        # http://localhost:5173
 npm run build      # 產出 dist/（index.html + assets/）
 ```
 
-## 發布到 doubao-html（現有鏈接）
-```bash
-cd dist
-lark-cli apps +deploy --file-path ./index.html --app-id app_17h6xwh4fha
-lark-cli apps +release-get --app-id app_17h6xwh4fha --release-id <上一步的 release_id>   # 輪詢到 status=finished
 ```
 線上地址：`https://4mdk7hsp7gza6.doubao.link/app/app_17h6xwh4fha`
 
@@ -52,15 +47,3 @@ lark-cli apps +release-get --app-id app_17h6xwh4fha --release-id <上一步的 r
 1. 把 `dist/` 整個目錄上傳（`npx wrangler pages deploy dist`）
 2. 或把 dist/ 內容推送到 Cloudflare Pages 綁定的 Git 倉庫
 
-## 部署到火山引擎 IGA Pages
-1. 控制台 → 智能體應用 / Pages 服務 → 新建靜態站點
-2. 上傳 `dist/` 整個目錄，選擇 HTML 靜態託管
-
-## 數據與遷移
-- 本地數據 KEY = `cvm-v2`（教程 KEY = `cvm-tut-v2`），發版不得改 KEY
-- `load()` 逐項補默認：老數據缺少新銀行/新字段時自動補空，絕不整體覆蓋
-- 更換裝置 = 新空數據；清除瀏覽器數據會清空記錄
-
-## 注意
-- 銀行 logo 以 CSS `url()` 引用（非 JS 動態 src），發布/部署平台可靜態爬取，不會裂圖
-- 圖片請勿放入 JS 數組或 `:src` 動態綁定，否則發布後會裂圖

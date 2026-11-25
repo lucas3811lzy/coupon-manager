@@ -5,3 +5,4 @@ Usally this branch is called qa.
 
 
 If happy, you can deploy production
+npx wrangler deploy
