@@ -13,12 +13,12 @@
 
     <p v-if="amount > 50000" role="alert">請輸入不超過 MOP$50,000 的金額。</p>
     <section v-if="amount > 0 && amount <= 50000" class="result-card best">
-      <span class="feature-badge feature-badge-light">跨銀行最高折抵</span>
+      <span v-if="recommendedPlan.length" class="feature-badge feature-badge-light">{{ recommendedBanks.length === 1 ? '單一來源最佳' : '跨銀行最高折抵' }}</span>
       <div class="result-kicker">最大化本次優惠</div>
-      <div class="saving">省下 <strong>MOP${{ fmt(mixedSaving) }}</strong></div>
-      <p v-if="mixedPlan.length">使用 {{ mixedCount }} 張券 · {{ providerNames(mixedPlan) }}</p>
+      <div class="saving">省下 <strong>MOP${{ fmt(recommendation.saving) }}</strong></div>
+      <p v-if="recommendedPlan.length">使用 {{ recommendation.plan.length }} 張券 · {{ recommendedBanks.join('、') }}</p>
       <p v-else>目前沒有可用於這筆消費的優惠券。</p>
-      <div class="pay-line"><span>預計自付</span><b>MOP${{ fmt(Math.max(0, amount - mixedSaving)) }}</b></div>
+      <div class="pay-line"><span>預計自付</span><b>MOP${{ fmt(Math.max(0, amount - recommendation.saving)) }}</b></div>
     </section>
 
     <section class="section-block">
@@ -40,9 +40,9 @@
     </section>
 
     <section class="section-block">
-      <div class="section-heading"><h3>跨銀行／服務組合</h3><span class="feature-badge">最多銀行共同折抵</span></div>
-      <div v-if="mixedPlan.length" class="mix-list">
-        <div v-for="(item, index) in mixedPlan" :key="item.bank + item.face + index" class="mix-row">
+      <div class="section-heading"><h3>建議用券明細</h3></div>
+      <div v-if="recommendedPlan.length" class="mix-list">
+        <div v-for="(item, index) in recommendedPlan" :key="item.bank + item.face + index" class="mix-row">
           <span class="face-chip">MOP${{ item.face }}</span><span>{{ NAMES[item.bank] }} · {{ item.count }} 張</span><b>−${{ fmt(item.saving) }}</b>
         </div>
       </div>
@@ -56,6 +56,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { app, BANKS, FACES, NAMES, TIMES, fmt } from '../../store'
+import { optimize } from '../../utils/planner.js'
 
 import { bankAppUrl } from '../../config/bankApps.js'
 import bocLogo from '../../assets/boc.png'
@@ -68,46 +69,19 @@ import alipayLogo from '../../assets/alipay.png'
 const amount = ref('')
 const BANK_LOGOS = { boc: bocLogo, icbc: icbcLogo, macaupass: macaupassLogo, luso: lusoLogo, taifung: taifungLogo, cgb: cgbLogo, alipay: alipayLogo }
 
-function optimize (banks, budget) {
-  const limit = Math.min(50000, Math.max(0, Math.floor(Number(budget) || 0)))
-  if (!limit || !Number.isFinite(Number(budget)) || Number(budget) > 50000) return { saving: 0, plan: [] }
-  const dp = new Array(limit + 1).fill(null)
-  dp[0] = { saving: 0, plan: [] }
-  const items = []
-  for (const bank of banks) {
-    for (const face of FACES) {
-      const available = Math.max(0, app.state[bank][face].got - app.state[bank][face].used)
-      for (let count = 0; count < Math.min(available, Math.ceil(limit / (face * TIMES))); count++) items.push({ bank, face, threshold: face * TIMES, discount: face })
-    }
-  }
-  for (const item of items) {
-    for (let spent = limit; spent >= 0; spent--) {
-      const current = dp[spent]
-      if (!current) continue
-      const nextSpent = spent + item.threshold
-      if (nextSpent > limit) continue
-      const candidate = { saving: Math.min(limit, current.saving + item.discount), plan: [...current.plan, { bank: item.bank, face: item.face, count: 1, saving: item.discount }] }
-      if (!dp[nextSpent] || candidate.saving > dp[nextSpent].saving) dp[nextSpent] = candidate
-    }
-  }
-  const best = dp.reduce((best, candidate) => candidate && candidate.saving > best.saving ? candidate : best, { saving: 0, plan: [] })
-  return best || { saving: 0, plan: [] }
-}
-
-const mixed = computed(() => optimize(BANKS, amount.value))
-const mixedSaving = computed(() => mixed.value.saving)
-const mixedPlan = computed(() => {
+const recommendation = computed(() => optimize(BANKS, amount.value, app.state, FACES, TIMES))
+const recommendedBanks = computed(() => [...new Set(recommendation.value.plan.map(item => NAMES[item.bank]))])
+const recommendedPlan = computed(() => {
   const grouped = new Map()
-  mixed.value.plan.forEach(item => {
+  recommendation.value.plan.forEach(item => {
     const key = item.bank + ':' + item.face
     const prev = grouped.get(key) || { ...item, count: 0, saving: 0 }
     prev.count++; prev.saving += item.saving; grouped.set(key, prev)
   })
   return [...grouped.values()]
 })
-const mixedCount = computed(() => mixedPlan.value.reduce((sum, item) => sum + item.count, 0))
 const singleOptions = computed(() => BANKS.map(bank => {
-  const option = optimize([bank], amount.value)
+  const option = optimize([bank], amount.value, app.state, FACES, TIMES)
   return { bank, saving: option.saving, count: option.plan.length }
 }).sort((a, b) => b.saving - a.saving))
 const visibleSingleOptions = computed(() => {
@@ -125,7 +99,6 @@ const visibleSingleOptions = computed(() => {
   ).sort((a, b) => b.saving - a.saving)
 })
 
-function providerNames (plan) { return [...new Set(plan.map(item => NAMES[item.bank]))].join('、') }
 async function copyPayment (saving) {
   const due = Math.max(0, Number(amount.value) - saving)
   try {
