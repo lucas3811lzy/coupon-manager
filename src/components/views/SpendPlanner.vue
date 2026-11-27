@@ -22,28 +22,10 @@
     </section>
 
     <section class="section-block">
-      <div class="section-heading"><h3>只用同一銀行／服務</h3><span>比較單一支付來源</span></div>
-      <article v-for="(option, index) in visibleSingleOptions" :key="option.bank" class="provider-row">
-        <div class="provider-title">
-          <a class="provider-logo-link" :href="bankAppUrl(option.bank)" target="_blank" rel="noopener noreferrer" :aria-label="'開啟 ' + NAMES[option.bank] + ' App Store 頁面'" :title="'開啟 ' + NAMES[option.bank] + ' App Store 頁面'">
-            <img class="provider-logo" :src="BANK_LOGOS[option.bank]" :alt="NAMES[option.bank] + ' 標誌'" />
-          </a>
-          <span class="provider-name">{{ NAMES[option.bank] }}</span>
-          <span class="feature-badge">{{ index === 0 ? '單一來源最佳' : '不用跨行切換' }}</span>
-        </div>
-        <div class="provider-info"><small>{{ option.count }} 張可用券</small></div>
-        <div class="provider-save"><b>MOP${{ fmt(option.saving) }}</b><small>可省金額</small></div>
-        <button v-if="amount > 0 && amount <= 50000" class="mpay-button" type="button" @click="copyPayment(option.saving)">複製預計自付金額</button>
-      </article>
-      <p v-if="amount > 0 && !visibleSingleOptions.length" class="empty">這筆消費目前沒有可用券的單一銀行方案。</p>
-      <p v-else-if="!amount" class="empty">輸入消費金額後，只顯示至少有一張可用券的銀行。</p>
-    </section>
-
-    <section class="section-block">
       <div class="section-heading"><h3>建議用券明細</h3></div>
       <div v-if="recommendedPlan.length" class="mix-list">
         <div v-for="(item, index) in recommendedPlan" :key="item.bank + item.face + index" class="mix-row">
-          <span class="face-chip">MOP${{ item.face }}</span><span>{{ NAMES[item.bank] }} · {{ item.count }} 張</span><b>−${{ fmt(item.saving) }}</b>
+          <span class="face-chip">MOP${{ item.face }}</span><span class="mix-provider"><span>{{ NAMES[item.bank] }} · {{ item.count }} 張</span><a v-if="item.bank === 'boc'" class="boc-payment-link" href="bocmwidget://Widget_Payment_BocPay"><img :src="bocLogo" alt="" class="boc-payment-logo" />進入付款碼頁面</a></span><b>−${{ fmt(item.saving) }}</b>
         </div>
       </div>
       <p v-else class="empty">輸入消費金額，查看適用的券組合。</p>
@@ -115,5 +97,6 @@ async function copyPayment (saving) {
 .planner{padding-top:18px}.planner-head{display:flex;align-items:center;gap:12px;margin-bottom:16px}.planner-head h2{font-size:20px;margin:0;font-weight:800}.eyebrow{font-size:12px;color:var(--muted);margin:0 0 2px}.backbtn{height:42px;padding:0 15px;border-radius:999px;background:var(--card);color:var(--brand);font-weight:700;box-shadow:var(--shadow);border:1px solid var(--line)}
 .amount-card,.result-card,.section-block{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}.amount-card label{font-size:13px;color:var(--muted);font-weight:700}.amount-input{display:flex;align-items:center;gap:8px;margin-top:7px}.amount-input span{font-size:14px;font-weight:700;color:var(--brand)}.amount-input input{width:100%;border:0;outline:0;background:transparent;font-family:inherit;font-weight:800;color:var(--ink);font-size:28px}.amount-card p,.result-card p{font-size:12px;color:var(--muted);margin:7px 0 0;line-height:1.5}.best{background:linear-gradient(135deg,#0E7C66,#168d73);color:#fff;border:0}.result-kicker{font-size:12px;opacity:.82}.saving{font-size:17px;margin-top:5px}.saving strong{font-size:29px}.best p{color:rgba(255,255,255,.84)}.pay-line{display:flex;justify-content:space-between;border-top:1px solid rgba(255,255,255,.22);padding-top:11px;margin-top:13px;font-size:13px}.pay-line b{font-size:18px}
 .section-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.section-heading h3{font-size:15px;margin:0}.section-heading>span:not(.feature-badge),.provider-info small,.provider-save small{font-size:11px;color:var(--muted)}.provider-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 10px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}.provider-title{display:flex;align-items:center;gap:8px;min-width:0}.provider-logo-link{display:grid;place-items:center;width:34px;height:34px;flex:none;border:1px solid var(--line);border-radius:50%;background:#fff}.provider-logo-link:focus-visible{outline:2px solid var(--brand);outline-offset:2px}.provider-logo{display:block;width:27px;height:27px;object-fit:contain}.provider-name{display:block;font-weight:700;font-size:14px;min-width:0}.provider-title .feature-badge{margin-left:auto}.provider-info{grid-column:1;grid-row:2}.provider-save{grid-column:2;grid-row:1 / span 2;text-align:right}.provider-save b{display:block;color:var(--brand);font-size:15px}.feature-badge{display:inline-flex;align-items:center;justify-content:center;flex:none;max-width:58%;padding:4px 8px;border-radius:999px;background:var(--brand-soft);color:var(--brand);font-size:10px;font-weight:700;line-height:1.2;white-space:nowrap}.feature-badge-light{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.18);color:#fff}.result-card.best{position:relative;padding-right:128px}.mpay-button{grid-column:1/-1;padding:10px;border-radius:11px;background:#e8f3ef;color:var(--brand);font-weight:700}.mix-list{display:flex;flex-direction:column}.mix-row{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;padding:9px 0;border-top:1px solid var(--line);font-size:12px}.mix-row b{color:var(--brand)}.face-chip{background:var(--gold-soft);color:var(--gold);border-radius:8px;padding:5px 7px;font-weight:700;font-size:11px}.empty,.fine-print{font-size:12px;color:var(--muted);line-height:1.6}.fine-print{margin:4px 4px 18px}
+.mix-provider{display:flex;align-items:center;justify-content:space-between;gap:12px;min-width:0}.boc-payment-link{display:inline-flex;align-items:center;gap:6px;flex:none;color:var(--brand);font-weight:700;text-decoration:none}.boc-payment-link:hover{text-decoration:underline}.boc-payment-logo{width:22px;height:22px;object-fit:cover;object-position:center;clip-path:circle(45% at center)}
 @media(max-width:390px){.result-card.best{padding-right:16px;padding-top:48px}.feature-badge-light{left:16px;right:auto}.section-heading{align-items:flex-start}.section-heading h3{max-width:58%}.section-heading .feature-badge{max-width:42%;white-space:normal;text-align:center}}
 </style>
